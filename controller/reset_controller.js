@@ -6,7 +6,7 @@ const Users = require("../models/user_model");
 const BLOCK_DURATION = 60 * 60 * 1000;
 
 // Nombre maximal de tentatives
-const TENTATIVES_MAX = 4;
+const TENTATIVES_MAX = 5;
 
 // Fonction pour réinitialiser le token de l'utilisateur
 exports.reset = async (req, res) => {
@@ -29,7 +29,7 @@ exports.reset = async (req, res) => {
             // Convertir 'attemptExpires' en heure locale
             const tempsDattente = new Date(user.tentativesExpires).toLocaleString();
             return res.status(429).json({
-                message: `Nombre maximal de tentatives atteint. Veuillez réessayer après ${tempsDattente}.`
+                message: `Nombre maximal de tentatives atteint. Veuillez réessayer après ${tempsDattente.split(" ")[1]}.`
             });
         }
 

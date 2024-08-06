@@ -4,15 +4,15 @@ const bcrypt = require("bcrypt");
 const Users = require("../models/user_model");
 
 // Durée de blocage en millisecondes (1 heure)
-const BLOCK_DURATION = 60 * 60 * 1000;
+const BLOCK_DURATION = 5 * 60 * 1000;
 
 // Nombre maximal de tentatives
-const TENTATIVES_MAX = 4;
+const TENTATIVES_MAX = 5;
 
 //FONCTION D'ENREGISTREMENT DES UTILISATEURS
 exports.registre = async (req, res) => {
   try {
-    const { name, numero, email, password } = req.body;
+    const { numero, email, password } = req.body;
 
     // Vérifiez si l'utilisateur existe
     const userExiste = await Users.findOne({
@@ -75,7 +75,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Vérifier si l'utilisateur est bloqué (a atteint le nombre maximum de tentatives)
+    // Vérifier si l'utilisateur  a atteint le nombre maximum de tentatives et le bloqué
     if (user.tentatives >= TENTATIVES_MAX && user.tentativesExpires > Date.now()) {
       // Convertir 'tentativesExpires' en heure locale
       const tempsDattente = new Date(user.tentativesExpires).toLocaleString();
@@ -87,18 +87,21 @@ exports.login = async (req, res) => {
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (!validPassword) {
-      user.tentatives += 1;  // Incrémenter les tentatives
+      // Incrémenter les tentatives
+      user.tentatives += 1;  
       if (user.tentatives >= TENTATIVES_MAX) {
-        user.tentativesExpires = Date.now() + BLOCK_DURATION;  // Définir l'expiration si les tentatives maximales sont atteintes
+        // Définir l'expiration si les tentatives maximales sont atteintes
+        user.tentativesExpires = Date.now() + BLOCK_DURATION;  
       }
       await user.save();
       return res.status(401).json({
         message: "Votre mot de passe est incorrect"
       });
     }
-
-    user.tentatives = 0;  // Réinitialiser les tentatives en cas de succès
-    user.tentativesExpires = Date.now();  // Réinitialiser l'expiration
+    // Réinitialiser les tentatives en cas de succès
+    user.tentatives = 0;  
+    // Réinitialiser l'expiration
+    user.tentativesExpires = Date.now();  
 
     const token = jwt.sign(
       { userId: user._id },
