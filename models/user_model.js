@@ -4,9 +4,9 @@ const uniqueValidator = require("mongoose-unique-validator");
 
 const schema = mongoose.Schema({
     name: { type: String, require: true },
+    boutique_name:{type:String},
     numero: { type: String, require: true, unique: true },
     email: { type: String, require: true, unique: true },
-    photo: { type: mongoose.Types.ObjectId, ref: 'Photo', default: null },
     password: { type: String, require: true, min: 6 },
     remember_token: { type: String, default: null },
     tentatives: { type: Number, default: 0 },                  // Champ 'attempts' pour suivre les tentatives, initialisé à 0

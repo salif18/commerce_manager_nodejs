@@ -5,9 +5,12 @@ const cors = require("cors");
 const path = require("path");
 const app = express();
 const Auth_Router = require("./routes/route_auth");
-const Photo_Router = require("./routes/route_photo");
 const Reset_Router = require("./routes/route_reset");
-const Posts_Router = require("./routes/route_posts");
+const Products_Router = require("./routes/route_products")
+const Ventes_Router = require("./routes/route_ventes")
+const Categories_Router = require("./routes/route_categories")
+const Depenses_Router = require("./routes/route_depense")
+const Fournisseurs_Router = require("./routes/route_fournisseurs")
 
 // Configurer les middleware
 app.use(cors());
@@ -19,14 +22,18 @@ app.use('/photos', express.static(path.join(__dirname, 'public/photos')));
 app.use('/videos', express.static(path.join(__dirname, 'public/videos')));
 
 // Établir la connexion à la base de données
- mongoose.connect(process.env.URL_DATA_BASE)
- .then(()=>console.log("Base de donneés connectées"))
-  .catch(()=>console.log("Echec de connection à la base des données"));
+mongoose.connect(process.env.DB_NAME)
+  .then(() => console.log("Base de donneés connectées"))
+  .catch(() => console.log("Echec de connection à la base des données"));
 
 // Configurer les routes
 app.use("/auth", Auth_Router);
-app.use("/photo",Photo_Router)
-app.use("/reset",Reset_Router)
-app.use("/posts",Posts_Router)
+app.use("/reset", Reset_Router)
+app.use("/products", Products_Router)
+app.use("/ventes", Ventes_Router)
+app.use("/categories", Categories_Router)
+app.use("/depenses", Depenses_Router)
+app.use("/fournisseurs", Fournisseurs_Router)
+
 
 module.exports = app;

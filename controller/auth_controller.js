@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const Users = require("../models/user_model");
 
+const revokedTokens = []
+
 // Durée de blocage en millisecondes (1 heure)
 const BLOCK_DURATION = 5 * 60 * 1000;
 
@@ -67,7 +69,7 @@ exports.login = async (req, res) => {
         { numero: contacts },
         { email: contacts }
       ]
-    }).populate("photo"); // Assurez-vous que 'photo' est correct
+    })
 
     if (!user) {
       return res.status(400).json({
@@ -88,10 +90,10 @@ exports.login = async (req, res) => {
 
     if (!validPassword) {
       // Incrémenter les tentatives
-      user.tentatives += 1;  
+      user.tentatives += 1;
       if (user.tentatives >= TENTATIVES_MAX) {
         // Définir l'expiration si les tentatives maximales sont atteintes
-        user.tentativesExpires = Date.now() + BLOCK_DURATION;  
+        user.tentativesExpires = Date.now() + BLOCK_DURATION;
       }
       await user.save();
       return res.status(401).json({
@@ -99,9 +101,9 @@ exports.login = async (req, res) => {
       });
     }
     // Réinitialiser les tentatives en cas de succès
-    user.tentatives = 0;  
+    user.tentatives = 0;
     // Réinitialiser l'expiration
-    user.tentativesExpires = Date.now();  
+    user.tentativesExpires = Date.now();
 
     const token = jwt.sign(
       { userId: user._id },
@@ -122,3 +124,23 @@ exports.login = async (req, res) => {
     });
   }
 };
+
+// LOGOUT
+exports.logout = (req, res) => {
+  try {
+    // Récupérer le token dans l'entête
+    const token = req.headers.authorization.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({ error: 'Token manquant' });
+    }
+
+    // Ajouter le token à la liste des tokens révoqués
+    revokedTokens.push(token);
+
+    return res.status(200).json({ message: "deconnecté" })
+
+  } catch (err) {
+    return res.status(500).json({ err: err })
+  }
+}
