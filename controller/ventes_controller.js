@@ -5,7 +5,6 @@ exports.create = async (req, res, next) => {
     const { userId, _id, nom, categories, prix_achat, prix_vente, stocks, qty, date_vente } = await req.body;
 
     try {
-
         // Trouver le produit associé à la vente
         const product = await Produits.findById(_id); // Pas besoin d'encapsuler _id dans un objet
 
@@ -30,14 +29,14 @@ exports.create = async (req, res, next) => {
                 date_vente: date_vente ? date_vente : new Date()
             });
 
-            console.log("Objet Vente créé:", vente); // Afficher l'objet vente complet
+            console.log("Objet Vente créé------->:", vente); // Afficher l'objet vente complet
 
             const savedVente = await vente.save();
 
             // Mettre à jour le stock du produit
             product.stocks -= qty;
             await product.save();
-
+            console.log("Objet Vente saved----->:", savedVente);
             return res.status(201).json(
                 { message: 'Vente effectuée !!', results: savedVente },
             );

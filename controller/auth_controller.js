@@ -14,7 +14,7 @@ const TENTATIVES_MAX = 5;
 //FONCTION D'ENREGISTREMENT DES UTILISATEURS
 exports.registre = async (req, res) => {
   try {
-    const { numero, email, password } = req.body;
+    const { name , boutique_name , numero, email, password } = req.body;
 
     // Vérifiez si l'utilisateur existe
     const userExiste = await Users.findOne({
@@ -34,10 +34,9 @@ exports.registre = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Créer un instance du model user
-    const user = new Users({
-      ...req.body,
-      password: hashedPassword
-    });
+    const user = new Users({name,  boutique_name, numero , email,password: hashedPassword});
+
+    console.log(user)
 
     // Enregistrer l'utilisateur
     await user.save();
@@ -52,7 +51,10 @@ exports.registre = async (req, res) => {
     // Envoyer la réponse
     return res.status(201).json({
       token: token,
-      usser: user
+      userId: user._id,
+      userName:user.name,
+      entreprise:user.boutique_name,
+      message:"user creer"
     });
   } catch (error) {
     res.status(500).json(error);
@@ -63,7 +65,7 @@ exports.registre = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { contacts, password } = req.body;
-
+    console.log(req.body)
     const user = await Users.findOne({
       $or: [
         { numero: contacts },
@@ -115,7 +117,9 @@ exports.login = async (req, res) => {
 
     return res.status(200).json({
       token: token,
-      user: user
+      userId: user._id,
+      userName:user.name,
+      entreprise:user.boutique_name,
     });
 
   } catch (error) {

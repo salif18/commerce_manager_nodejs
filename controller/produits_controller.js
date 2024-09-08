@@ -65,13 +65,13 @@ exports.getOneProduits = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        const { id } = req.params
+        const { id } = req.params;
 
         if (!id) {
             return res.status(400).json({ message: 'ID du produit manquant' });
         }
 
-        const { nom, categories, prix_achat, prix_vente, stocks } = await req.body;
+        const { nom, categories, prix_achat, prix_vente, stocks } = req.body;
 
         // Trouver le produit existant
         const produit = await Produits.findById(id);
@@ -80,27 +80,36 @@ exports.update = async (req, res) => {
             return res.status(404).json({ message: 'Produit non trouvé' });
         }
 
+        // Vérification d'autorisation
+        if (produit.userId.toString() !== req.auth.userId) {
+            return res.status(401).json({ message: 'Non autorisé' });
+        }
+
         // Mise à jour du produit avec les nouvelles valeurs
         const produitMisAJour = await Produits.findByIdAndUpdate(
             id,
             {
-                nom: nom.length > 0 ? nom : produit.nom,
-                categories: categories.length > 0 ? categories : produit.categories,
-                prix_achat: prix_achat.length > 0 ? prix_achat : produit.prix_achat,
-                prix_vente: prix_vente.length > 0 ? prix_vente : produit.prix_vente,
-                stocks: stocks.length > 0 ? stocks : produit.stocks
+                nom: nom ? nom : produit.nom,
+                image: req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : produit.image,
+                categories: categories ? categories : produit.categories,
+                prix_achat: typeof prix_achat !== 'undefined' ? prix_achat : produit.prix_achat,
+                prix_vente: typeof prix_vente !== 'undefined' ? prix_vente : produit.prix_vente,
+                stocks: typeof stocks !== 'undefined' ? stocks : produit.stocks
             },
             { new: true } // retourne le document mis à jour
         );
 
-        return res.status(200).json(
-            { message: 'Modifié !!', results: produitMisAJour },
-        );
+        if (!produitMisAJour) {
+            return res.status(400).json({ message: 'Erreur lors de la mise à jour du produit' });
+        }
+
+        return res.status(200).json({ message: 'Produit modifié avec succès', results: produitMisAJour });
 
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
 };
+
 
 exports.delete= async (req, res) => {
     try {
@@ -112,95 +121,26 @@ exports.delete= async (req, res) => {
             return res.status(404).json({ message: 'Produit non trouvé' });
         }
 
+         
+      if (produit.userId.toString() !== req.auth.userId) {
+        return res.status(401).json({ message: 'Non autorisé' });
+      }
+  
+      const filename = produit.image.split('/images/')[1];
+  
+      // Supprimer l'image du serveur
+      fs.unlink(`public/images/${filename}`, async (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Erreur lors de la suppression de l'image", error: err });
+        }
+  
+        // Supprimer le produit après avoir supprimé l'image
+        await produit.deleteOne({ _id: id });
+        return res.status(200).json({ message: 'Produit supprimé avec succès' });
+      });
+
         return res.status(200).json({ message: 'Supprimé !!', results: produit });
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
 };
-
-
-
-// exports.update = async (req, res) => {
-//   try {
-//     // Construction de l'objet newProd avec l'image si elle existe
-//     const newProd = req.file ? {
-//       ...req.body,
-//       image: ${req.protocol}://${req.get('host')}/images/${req.file.filename}
-//     } : {
-//       ...req.body
-//     };
-
-//     // Vérification si le produit existe
-//     const product = await Product.findOne({ _id: req.params.id });
-
-//     if (!product) {
-//       return res.status(404).json({
-//         message: 'Produit non trouvé'
-//       });
-//     }
-
-//     // Vérification d'autorisation
-//     if (product.userId.toString() !== req.auth.userId) {
-//       return res.status(401).json({
-//         message: 'Non autorisé'
-//       });
-//     }
-
-//     // Mise à jour du produit
-//     const updatedProduct = await Product.findOneAndUpdate(
-//       { _id: req.params.id, userId: req.auth.userId },
-//       { ...newProd },
-//       { new: true } // Renvoie le produit mis à jour
-//     );
-
-//     if (!updatedProduct) {
-//       return res.status(400).json({
-//         message: 'Erreur lors de la mise à jour du produit'
-//       });
-//     }
-
-//     return res.status(200).json({
-//       message: 'Produit mis à jour avec succès',
-//       product: updatedProduct
-//     });
-
-//   } catch (err) {
-//     return res.status(500).json({
-//       err: err.message || 'Erreur serveur'
-//     });
-//   }
-// };
-
-
-
-// exports.delete = async (req, res) => {
-//     try {
-//       const { id } = req.params;
-//       const product = await Products.findOne({ _id: id });
-  
-//       if (!product) {
-//         return res.status(404).json({ message: 'Produit non trouvé' });
-//       }
-  
-//       if (product.userId.toString() !== req.auth.userId) {
-//         return res.status(401).json({ message: 'Non autorisé' });
-//       }
-  
-//       const filename = product.image.split('/images/')[1];
-  
-//       // Supprimer l'image du serveur
-//       fs.unlink(`public/images/${filename}`, async (err) => {
-//         if (err) {
-//           return res.status(500).json({ message: "Erreur lors de la suppression de l'image", error: err });
-//         }
-  
-//         // Supprimer le produit après avoir supprimé l'image
-//         await product.deleteOne({ _id: id });
-//         return res.status(200).json({ message: 'Produit supprimé avec succès' });
-//       });
-  
-//     } catch (err) {
-//       return res.status(500).json({ message: 'Erreur serveur', error: err.message });
-//     }
-//   };
-  
