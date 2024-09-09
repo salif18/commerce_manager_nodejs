@@ -1,6 +1,6 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const bcrypt = require("argon2");
+const bcrypt = require("bcrypt");
 const Users = require("../models/user_model");
 
 const revokedTokens = []

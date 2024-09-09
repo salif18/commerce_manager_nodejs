@@ -40,7 +40,7 @@ exports.getProduits = async (req, res) => {
         // Calcule le nombre total de stocks
         const stocks = produits.reduce((acc, item) => acc + (item?.stocks || 0), 0);
 
-        return res.status(200).json({ message: "OK", produits, totalAchatOfAchat: totalAchat, stocks });
+        return res.status(200).json({ message: "OK", produits:produits, totalAchatOfAchat: totalAchat, stocks });
     } catch (err) {
         return res.status(500).json({ message: "Erreur", error: err.message }, { status: 500 });
     }
