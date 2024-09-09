@@ -1,5 +1,5 @@
 require("dotenv").config();
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcryptjs');
 const Users = require("../models/user_model");
 
 // Durée de blocage en millisecondes (1 heure)
@@ -75,8 +75,10 @@ exports.valide = async (req, res) => {
             });
         }
 
+        // Hacher un mot de passe
+const salt = bcrypt.genSaltSync(10);
         // Hasher le nouveau mot de passe
-        const hashedNewPassword = await bcrypt.hash(new_password, 10);
+        const hashedNewPassword = bcrypt.hashSync(new_password, salt);
 
         // Mettre à jour le mot de passe de l'utilisateur et réinitialiser le token
         user.password = hashedNewPassword;
