@@ -29,9 +29,10 @@ exports.registre = async (req, res) => {
         message: "User existe"
       });
     }
-
+// Hacher un mot de passe
+const salt = bcrypt.genSaltSync(10);
     // Hacher le mot de passe
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword =  bcrypt.hashSync(password, salt);
 
     // Créer un instance du model user
     const user = new Users({name,  boutique_name, numero , email,password: hashedPassword});
@@ -88,7 +89,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    const validPassword = await bcrypt.compare(password, user.password);
+    const validPassword = bcrypt.compareSync(password, user.password);
 
     if (!validPassword) {
       // Incrémenter les tentatives
