@@ -24,7 +24,7 @@ exports.getFournisseurs = async (req, res) => {
 
         const fournisseurs = await Fournisseurs.find({ userId }).sort({ nom: -1 });
 
-        return res.status(200).json({ message: "OK", fournisseurs });
+        return res.status(200).json({ message: "OK", fournisseurs:fournisseurs });
     } catch (err) {
         return res.status(500).json({ message: "Erreur", error: err.message });
     }

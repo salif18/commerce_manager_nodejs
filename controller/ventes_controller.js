@@ -1,5 +1,8 @@
 const Vente = require("../models/ventes_model")
-const Produits = require("../models/produits_model")
+const Produits = require("../models/produits_model");
+const moment = require("moment");
+const  mongoose = require("mongoose");
+
 
 exports.create = async (req, res, next) => {
     const { userId, _id, nom, categories, prix_achat, prix_vente, stocks, qty, date_vente } = await req.body;
@@ -204,7 +207,7 @@ exports.getStatsHebdo = async (req, res, next) => {
         const totalHebdomendaire = await Vente.aggregate([
             {
                 $match: {
-                    userId: new mongoose.Types.ObjectId(userId),
+                    userId: new mongoose.Types.OjectId(userId),
                     date_vente: {
                         $gte: startOfWeek,
                         $lte: endOfWeek,

@@ -66,7 +66,7 @@ const salt = bcrypt.genSaltSync(10);
 exports.login = async (req, res) => {
   try {
     const { contacts, password } = req.body;
-    console.log(req.body)
+  
     const user = await Users.findOne({
       $or: [
         { numero: contacts },

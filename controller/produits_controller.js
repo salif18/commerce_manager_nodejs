@@ -8,7 +8,7 @@ exports.create = async (req, res, next) => {
         // Création d'un nouvel objet produit
         const nouveauProduit = new Produits({
             ...req.body,
-             image:req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : null,
+             image:req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : "",
             userId: req.auth.userId // Associer le produit à l'utilisateur
         });
 

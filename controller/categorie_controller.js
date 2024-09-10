@@ -55,7 +55,7 @@ exports.delete = async (req, res) => {
             return res.status(404).json({ message: 'Categorie non trouvé' });
         }
 
-        return res.status(200).json({ message: 'Supprimé !!', results: produit });
+        return res.status(200).json({ message: 'Supprimé !!', results: categorie });
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }

@@ -76,7 +76,7 @@ exports.valide = async (req, res) => {
         }
 
         // Hacher un mot de passe
-const salt = bcrypt.genSaltSync(10);
+        const salt = bcrypt.genSaltSync(10);
         // Hasher le nouveau mot de passe
         const hashedNewPassword = bcrypt.hashSync(new_password, salt);
 

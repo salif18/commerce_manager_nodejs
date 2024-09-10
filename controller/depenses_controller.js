@@ -43,7 +43,7 @@ exports.getDepenses = async (req, res) => {
         const depensesTotal = results.reduce((total, depense) => total + depense.montants, 0);
 
         return res.status(200).json(
-            { message: 'ok', results, depensesTotal },
+            { message: 'ok', results:results, depensesTotal:depensesTotal },
         );
     } catch (err) {
         return res.status(500).json(
