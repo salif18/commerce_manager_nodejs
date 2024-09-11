@@ -16,7 +16,7 @@ exports.create = async (req, res, next) => {
         const produitSauvegarde = await nouveauProduit.save();
 
         // Retourner une réponse avec le produit sauvegardé
-        return res.status(201).json({ message: "Ajouté", produitSauvegarde });
+        return res.status(201).json({ message: "Ajouté", produits:produitSauvegarde });
     } catch (err) {
 
         return res.status(500).json({ message: "Erreur", error: err.message });
@@ -56,7 +56,7 @@ exports.getOneProduits = async (req, res) => {
             return res.status(404).json({ message: 'Produit non trouvé' });
         }
 
-        return res.status(200).json({ message: 'ok', results: produit });
+        return res.status(200).json({ message: 'ok', produits: produit });
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
@@ -103,7 +103,7 @@ exports.update = async (req, res) => {
             return res.status(400).json({ message: 'Erreur lors de la mise à jour du produit' });
         }
 
-        return res.status(200).json({ message: 'Produit modifié avec succès', results: produitMisAJour });
+        return res.status(200).json({ message: 'Produit modifié avec succès', produits: produitMisAJour });
 
     } catch (err) {
         return res.status(500).json({ message: err.message });
@@ -139,7 +139,7 @@ exports.delete= async (req, res) => {
         return res.status(200).json({ message: 'Produit supprimé avec succès' });
       });
 
-        return res.status(200).json({ message: 'Supprimé !!', results: produit });
+        return res.status(200).json({ message: 'Supprimé !!', produits: produit });
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }

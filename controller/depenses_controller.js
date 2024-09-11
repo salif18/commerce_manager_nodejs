@@ -16,7 +16,7 @@ exports.create = async (req, res) => {
         const results = await nouvelleDepense.save();
 
         return res.status(201).json(
-            { message: 'Ajoutée !!', results },
+            { message: 'Ajoutée !!', results:results },
         );
     } catch (err) {
         return res.status(500).json(
@@ -67,7 +67,7 @@ exports.delete = async (req, res) => {
         }
 
         return res.status(200).json(
-            { message: 'Supprimée !!', results },
+            { message: 'Supprimée !!', results:results },
         );
     } catch (err) {
         return res.status(500).json(

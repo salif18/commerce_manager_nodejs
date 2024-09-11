@@ -6,7 +6,7 @@ exports.create = async (req, res) => {
 
         const fournisseurSauvegarde = await nouveauFournisseur.save();
 
-        return res.status(201).json({ message: "Ajouté", fournisseurSauvegarde, });
+        return res.status(201).json({ message: "Ajouté", fournisseurs:fournisseurSauvegarde, });
     } catch (err) {
         return res.status(500).json({ message: "Erreur", error: err.message });
     }
@@ -40,7 +40,7 @@ exports.delete = async (req, res) => {
             return res.status(404).json({ message: 'fournisseur non trouvé' });
         }
 
-        return res.status(200).json({ message: 'Supprimé !!', results: produit });
+        return res.status(200).json({ message: 'Supprimé !!', fournisseurs: fournisseur });
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }

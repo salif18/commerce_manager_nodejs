@@ -12,7 +12,7 @@ exports.create = async (req, res) => {
         const results = await nouvelleCategorie.save();
 
         return res.status(201).json(
-            { message: 'Ajouté !!', results },
+            { message: 'Ajouté !!', results:results },
         );
     } catch (err) {
         return res.status(500).json(
@@ -36,7 +36,7 @@ exports.getCategories = async (req, res) => {
         const results = await Categories.find({ userId }).sort({ name: 1 });
 
         return res.status(200).json(
-            { message: 'ok', results },
+            { message: 'ok', results:results },
         );
 
     } catch (err) {
