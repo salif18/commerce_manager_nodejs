@@ -207,7 +207,7 @@ exports.getStatsHebdo = async (req, res, next) => {
         const totalHebdomendaire = await Vente.aggregate([
             {
                 $match: {
-                    userId: new mongoose.Types.OjectId(userId),
+                    userId: new mongoose.Types.ObjectId(userId),
                     date_vente: {
                         $gte: startOfWeek,
                         $lte: endOfWeek,
