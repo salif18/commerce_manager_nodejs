@@ -19,7 +19,7 @@ app.use(cors({
   credentials: true, // Autorise l'envoi des cookies ou des tokens
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-app.options('*', cors()); // Permet les pré-requêtes OPTIONS pour toutes les routes
+// app.options('*', cors()); // Permet les pré-requêtes OPTIONS pour toutes les routes
 
 app.use(express.json());
 
