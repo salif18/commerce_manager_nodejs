@@ -14,10 +14,13 @@ const Fournisseurs_Router = require("./routes/route_fournisseurs")
 
 // Configurer les middleware
 app.use(cors({
-  origin: ['*', 'https://smeckdev-vmanager.vercel.app'],
+  origin: ['https://smeckdev-vmanager.vercel.app', 'https://smeckdev-salespulse.vercel.app', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true // Si vous travaillez avec des cookies
+  credentials: true, // Autorise l'envoi des cookies ou des tokens
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+app.options('*', cors()); // Permet les pré-requêtes OPTIONS pour toutes les routes
+
 app.use(express.json());
 
 // Middleware pour servir les fichiers statiques
