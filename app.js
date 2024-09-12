@@ -13,7 +13,11 @@ const Depenses_Router = require("./routes/route_depense")
 const Fournisseurs_Router = require("./routes/route_fournisseurs")
 
 // Configurer les middleware
-app.use(cors());
+app.use(cors({
+  origin: ['*', 'https://smeckdev-vmanager.vercel.app'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true // Si vous travaillez avec des cookies
+}));
 app.use(express.json());
 
 // Middleware pour servir les fichiers statiques
