@@ -14,7 +14,7 @@ const Fournisseurs_Router = require("./routes/route_fournisseurs")
 
 // Configurer les middleware
 app.use(cors({
-  origin: ['https://smeckdev-vmanager.vercel.app', 'https://smeckdev-salespulse.vercel.app', 'http://localhost:3000'],
+  origin: ['https://smeckdev-vmanager.vercel.app', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
