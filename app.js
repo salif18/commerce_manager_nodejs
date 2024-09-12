@@ -16,7 +16,7 @@ const Fournisseurs_Router = require("./routes/route_fournisseurs")
 app.use(cors({
   origin: ['https://smeckdev-vmanager.vercel.app', 'https://smeckdev-salespulse.vercel.app', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true, // Autorise l'envoi des cookies ou des tokens
+  // credentials: true, // Autorise l'envoi des cookies ou des tokens
   // allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 // app.options('*', cors()); // Permet les pré-requêtes OPTIONS pour toutes les routes
