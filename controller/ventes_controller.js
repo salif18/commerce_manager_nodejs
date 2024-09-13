@@ -252,7 +252,7 @@ exports.getStatsByMonth = async (req, res, next) => {
                         annee: { $year: "$date_vente" },
                         mois: { $month: "$date_vente" }
                     },
-                    nombre_ventes: { $sum: 1 },
+                    nombre_ventes: { $sum: "$qty" }, // Somme des quantités de produits vendus,
                     total_ventes: { $sum: { $multiply: ["$prix_vente", "$qty"] } }
                 }
             },
