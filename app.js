@@ -13,17 +13,22 @@ const Depenses_Router = require("./routes/route_depense")
 const Fournisseurs_Router = require("./routes/route_fournisseurs")
 
 // Configurer les middleware
-// app.use(cors({
-//   origin: ['https://smeckdev-vmanager.vercel.app', 'http://localhost:3000'],
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-// }));
+const corsOptions = {
+  origin: ['https://smeckdev-vmanager.vercel.app', 'https://smeckdev-salespulse.vercel.app', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
+  credentials: true // Si vous avez besoin d'envoyer des cookies ou des headers d'autorisation
+};
+
+app.use(cors(corsOptions));
+
+// Vous pouvez laisser l'option OPTIONS pour gérer les requêtes preflight
+app.options('*', cors(corsOptions));
 
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin','*');
-  res.setHeader('Access-Control-Allow-Headers',
-  'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Methods',
-  'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.setHeader('Access-Control-Allow-Origin', 'https://smeckdev-salespulse.vercel.app');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
 });
 
