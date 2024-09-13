@@ -40,13 +40,13 @@ mongoose.connect(process.env.DB_NAME)
   .catch(() => console.log("Echec de connection à la base des données"));
 
 // Configurer les routes
-app.use("/auth", Auth_Router);
-app.use("/reset", Reset_Router)
-app.use("/products", Products_Router)
-app.use("/ventes", Ventes_Router)
-app.use("/categories", Categories_Router)
-app.use("/depenses", Depenses_Router)
-app.use("/fournisseurs", Fournisseurs_Router)
+app.use("/api/auth", Auth_Router);
+app.use("/api/reset", Reset_Router)
+app.use("/api/products", Products_Router)
+app.use("/api/ventes", Ventes_Router)
+app.use("/api/categories", Categories_Router)
+app.use("/api/depenses", Depenses_Router)
+app.use("/api/fournisseurs", Fournisseurs_Router)
 
 
 module.exports = app;
