@@ -13,19 +13,19 @@ const Depenses_Router = require("./routes/route_depense")
 const Fournisseurs_Router = require("./routes/route_fournisseurs")
 
 // Configurer les middleware
-app.use(cors({
-  origin: ['https://smeckdev-vmanager.vercel.app', 'http://localhost:3000'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+// app.use(cors({
+//   origin: ['https://smeckdev-vmanager.vercel.app', 'http://localhost:3000'],
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+// }));
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin || "*");
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Origin','*');
+  res.setHeader('Access-Control-Allow-Headers',
+  'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Methods',
+  'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
 });
-app.options('*', cors()); // Permet les pré-requêtes OPTIONS pour toutes les routes
 
 app.use(express.json());
 
