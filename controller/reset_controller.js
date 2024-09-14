@@ -1,6 +1,7 @@
 require("dotenv").config();
 const bcrypt = require('bcryptjs');
 const Users = require("../models/user_model");
+const nodemailer = require("nodemailer");
 
 // Durée de blocage en millisecondes (1 heure)
 const BLOCK_DURATION = 60 * 60 * 1000;
@@ -43,9 +44,25 @@ exports.reset = async (req, res) => {
             user.tentativesExpires = Date.now() + BLOCK_DURATION;  // Définir l'expiration si les tentatives maximales sont atteintes
         }
         await user.save();
-
+        const transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: "465",
+            auth: {
+              user: process.env.MAIL_FROM_ADDRESS,
+              pass: process.env.MAIL_PASSWORD,
+            },
+          });
+      
+          const mailOption = {
+            from: "SalesPulse",
+            to: user.email,
+            subject: "Code de reinitialisation de mot de passe",
+            text: `Merci de cliquez sur ce lien pour réinitialiser votre mot de passe : ${newToken}`,
+          };
+       
+          transporter.sendMail(mailOption); 
         return res.status(200).json({
-            message: `Veuillez entrer ce code ${newToken}`
+            message: `Veuillez entrer ce code `
         });
     } catch (err) {
         return res.status(500).json({
@@ -96,3 +113,59 @@ exports.valide = async (req, res) => {
         });
     }
 };
+
+// Fonction de mise à jour du mot de passe
+exports.updatePassword = async (req, res) => {
+    try {
+       
+
+        const { current_password, new_password, confirm_password } = req.body;
+        const userId = req.params.userId;
+
+        // Trouver l'utilisateur par ID
+        const user = await Users.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                status: false,
+                message: "Utilisateur non trouvé"
+            });
+        }
+
+        // Vérification du mot de passe actuel
+        const isMatch = await bcrypt.compare(current_password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({
+                status: false,
+                message: "Mot de passe actuel incorrect"
+            });
+        }
+
+        // Vérification que les nouveaux mots de passe correspondent
+        if (new_password !== confirm_password) {
+            return res.status(400).json({
+                status: false,
+                message: "Les mots de passe ne correspondent pas"
+            });
+        }
+
+        // Hachage du nouveau mot de passe et mise à jour de l'utilisateur
+        const hashedPassword = await bcrypt.hash(new_password, 10);
+        user.password = hashedPassword;
+
+        await user.save();
+
+        return res.status(200).json({
+            status: true,
+            message: "Mot de passe modifié avec succès"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            status: false,
+            message: error.message
+        });
+    }
+};
+
+
+
