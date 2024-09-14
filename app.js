@@ -13,7 +13,6 @@ const Depenses_Router = require("./routes/route_depense")
 const Fournisseurs_Router = require("./routes/route_fournisseurs")
 
 app.use(cors());
-// app.options('*', cors());
 app.use(express.json());
 
 // Middleware pour servir les fichiers statiques
