@@ -27,12 +27,12 @@ mongoose.connect(process.env.DB_NAME)
 
 // Configurer les routes
 app.use("/api/auth", Auth_Router);
-app.use("/api/reset", Reset_Router)
-app.use("/api/products", Products_Router)
-app.use("/api/ventes", Ventes_Router)
-app.use("/api/categories", Categories_Router)
-app.use("/api/depenses", Depenses_Router)
-app.use("/api/fournisseurs", Fournisseurs_Router)
+app.use("/api/reset", Reset_Router);
+app.use("/api/products", Products_Router);
+app.use("/api/ventes", Ventes_Router);
+app.use("/api/categories", Categories_Router);
+app.use("/api/depenses", Depenses_Router);
+app.use("/api/fournisseurs", Fournisseurs_Router);
 
 
 module.exports = app;
