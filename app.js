@@ -20,10 +20,10 @@ const corsOptions = {
   credentials: true // Si vous avez besoin d'envoyer des cookies ou des headers d'autorisation
 };
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 // Vous pouvez laisser l'option OPTIONS pour gérer les requêtes preflight
-app.options('*', cors(corsOptions));
+// app.options('*', cors(corsOptions));
 
 // app.use((req, res, next) => {
 //   res.setHeader('Access-Control-Allow-Origin', 'https://smeckdev-salespulse.vercel.app');
