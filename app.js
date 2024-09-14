@@ -12,26 +12,7 @@ const Categories_Router = require("./routes/route_categories")
 const Depenses_Router = require("./routes/route_depense")
 const Fournisseurs_Router = require("./routes/route_fournisseurs")
 
-// Configurer les middleware
-const corsOptions = {
-  origin: ['https://smeckdev-vmanager.vercel.app', 'https://smeckdev-salespulse.vercel.app', 'http://localhost:3000'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
-  credentials: true // Si vous avez besoin d'envoyer des cookies ou des headers d'autorisation
-};
-
 app.use(cors());
-
-// Vous pouvez laisser l'option OPTIONS pour gérer les requêtes preflight
-// app.options('*', cors(corsOptions));
-
-// app.use((req, res, next) => {
-//   res.setHeader('Access-Control-Allow-Origin', 'https://smeckdev-salespulse.vercel.app');
-//   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-//   next();
-// });
-
 app.use(express.json());
 
 // Middleware pour servir les fichiers statiques
