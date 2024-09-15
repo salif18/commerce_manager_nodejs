@@ -42,7 +42,7 @@ exports.getProduits = async (req, res) => {
 
         return res.status(200).json({ message: "OK", produits:produits, totalAchatOfAchat: totalAchat, stocks });
     } catch (err) {
-        return res.status(500).json({ message: "Erreur", error: err.message }, { status: 500 });
+        return res.status(500).json({ message: "Erreur", error: err.message });
     }
 };
 
