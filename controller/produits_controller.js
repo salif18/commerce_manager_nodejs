@@ -66,7 +66,7 @@ exports.getOneProduits = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const { id } = req.params;
-
+        console.log(req.body)
         if (!id) {
             return res.status(400).json({ message: 'ID du produit manquant' });
         }
@@ -75,26 +75,26 @@ exports.update = async (req, res) => {
 
         // Trouver le produit existant
         const produit = await Produits.findById(id);
-
+        console.log(req.body)
         if (!produit) {
             return res.status(404).json({ message: 'Produit non trouvé' });
         }
 
         // Vérification d'autorisation
-        if (produit.userId.toString() !== req.auth.userId) {
+        if (produit.userId !== req.auth.userId) {
             return res.status(401).json({ message: 'Non autorisé' });
         }
-
+console.log(produit)
         // Mise à jour du produit avec les nouvelles valeurs
         const produitMisAJour = await Produits.findByIdAndUpdate(
             id,
             {
                 nom: nom ? nom : produit.nom,
                 image: req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : produit.image,
-                categories: categories ? categories : produit.categories,
-                prix_achat: typeof prix_achat !== 'undefined' ? prix_achat : produit.prix_achat,
-                prix_vente: typeof prix_vente !== 'undefined' ? prix_vente : produit.prix_vente,
-                stocks: typeof stocks !== 'undefined' ? stocks : produit.stocks
+                categories: categories.length > 0 ? categories : produit.categories,
+                prix_achat: prix_achat.length > 0 ? prix_achat : produit.prix_achat,
+                prix_vente: prix_vente.length > 0 ? prix_vente : produit.prix_vente,
+                stocks: stocks.length > 0 ? stocks : produit.stocks
             },
             { new: true } // retourne le document mis à jour
         );
