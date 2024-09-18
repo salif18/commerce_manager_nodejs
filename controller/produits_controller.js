@@ -66,7 +66,9 @@ exports.getOneProduits = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log(req.body)
+        console.log("id:",id);
+        console.log("image:",req.file)
+        console.log("body",req.body)
         if (!id) {
             return res.status(400).json({ message: 'ID du produit manquant' });
         }
@@ -81,10 +83,10 @@ exports.update = async (req, res) => {
         }
 
         // Vérification d'autorisation
-        if (produit.userId !== req.auth.userId) {
+        if (produit.userId.toString() !== req.auth.userId) {
             return res.status(401).json({ message: 'Non autorisé' });
         }
-console.log(produit)
+console.log("produit existant:",produit)
         // Mise à jour du produit avec les nouvelles valeurs
         const produitMisAJour = await Produits.findByIdAndUpdate(
             id,
@@ -103,6 +105,7 @@ console.log(produit)
             return res.status(400).json({ message: 'Erreur lors de la mise à jour du produit' });
         }
 
+        console.log("produit a jours est:",)
         return res.status(200).json({ message: 'Produit modifié avec succès', produits: produitMisAJour });
 
     } catch (err) {

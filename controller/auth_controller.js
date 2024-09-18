@@ -193,7 +193,7 @@ exports.updateUser = async (req, res) => {
 
     // Trouver l'utilisateur par ID
     const user = await Users.findById(userId);
-    console.log("L'utilisateur est :", user);
+    
     if (!user) {
       return res.status(404).json({
         status: false,
