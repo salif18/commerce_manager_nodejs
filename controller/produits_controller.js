@@ -8,7 +8,7 @@ exports.create = async (req, res, next) => {
         // Création d'un nouvel objet produit
         const nouveauProduit = new Produits({
             ...req.body,
-             image:req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : "",
+            image: req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : "",
             userId: req.auth.userId // Associer le produit à l'utilisateur
         });
 
@@ -16,7 +16,7 @@ exports.create = async (req, res, next) => {
         const produitSauvegarde = await nouveauProduit.save();
 
         // Retourner une réponse avec le produit sauvegardé
-        return res.status(201).json({ message: "Ajouté", produits:produitSauvegarde });
+        return res.status(201).json({ message: "Ajouté", produits: produitSauvegarde });
     } catch (err) {
 
         return res.status(500).json({ message: "Erreur", error: err.message });
@@ -40,7 +40,7 @@ exports.getProduits = async (req, res) => {
         // Calcule le nombre total de stocks
         const stocks = produits.reduce((acc, item) => acc + (item?.stocks || 0), 0);
 
-        return res.status(200).json({ message: "OK", produits:produits, totalAchatOfAchat: totalAchat, stocks });
+        return res.status(200).json({ message: "OK", produits: produits, totalAchatOfAchat: totalAchat, stocks });
     } catch (err) {
         return res.status(500).json({ message: "Erreur", error: err.message });
     }
@@ -66,9 +66,9 @@ exports.getOneProduits = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log("id:",id);
-        console.log("image:",req.file)
-        console.log("body",req.body)
+        console.log("id:", id);
+        console.log("image:", req.file)
+        console.log("body", req.body)
         if (!id) {
             return res.status(400).json({ message: 'ID du produit manquant' });
         }
@@ -86,7 +86,7 @@ exports.update = async (req, res) => {
         if (produit.userId.toString() !== req.auth.userId) {
             return res.status(401).json({ message: 'Non autorisé' });
         }
-console.log("produit existant:",produit)
+        console.log("produit existant:", produit)
         // Mise à jour du produit avec les nouvelles valeurs
         const produitMisAJour = await Produits.findByIdAndUpdate(
             id,
@@ -105,7 +105,7 @@ console.log("produit existant:",produit)
             return res.status(400).json({ message: 'Erreur lors de la mise à jour du produit' });
         }
 
-        console.log("produit a jours est:",)
+        console.log("produit a jours est:",produitMisAJour)
         return res.status(200).json({ message: 'Produit modifié avec succès', produits: produitMisAJour });
 
     } catch (err) {
@@ -114,7 +114,7 @@ console.log("produit existant:",produit)
 };
 
 
-exports.delete= async (req, res) => {
+exports.delete = async (req, res) => {
     try {
 
         const { id } = req.params
@@ -124,25 +124,24 @@ exports.delete= async (req, res) => {
             return res.status(404).json({ message: 'Produit non trouvé' });
         }
 
-         
-      if (produit.userId.toString() !== req.auth.userId) {
-        return res.status(401).json({ message: 'Non autorisé' });
-      }
-  
-      const filename = produit.image.split('/images/')[1];
-  
-      // Supprimer l'image du serveur
-      fs.unlink(`public/images/${filename}`, async (err) => {
-        if (err) {
-          return res.status(500).json({ message: "Erreur lors de la suppression de l'image", error: err });
-        }
-  
-        // Supprimer le produit après avoir supprimé l'image
-        await produit.deleteOne({ _id: id });
-        return res.status(200).json({ message: 'Produit supprimé avec succès' });
-      });
 
-        return res.status(200).json({ message: 'Supprimé !!', produits: produit });
+        if (produit.userId.toString() !== req.auth.userId) {
+            return res.status(401).json({ message: 'Non autorisé' });
+        }
+
+        const filename = produit.image.split('/images/')[1];
+
+        // Supprimer l'image du serveur
+        fs.unlink(`public/images/${filename}`, async (err) => {
+            if (err) {
+                return res.status(500).json({ message: "Erreur lors de la suppression de l'image", error: err });
+            }
+
+            // Supprimer le produit après avoir supprimé l'image
+            await produit.deleteOne({ _id: id });
+            return res.status(200).json({ message: 'Produit supprimé avec succès' });
+        });
+
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
