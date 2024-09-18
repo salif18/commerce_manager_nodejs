@@ -3,8 +3,6 @@ const fs = require('fs');
 
 exports.create = async (req, res, next) => {
     try {
-        console.log(req.file)
-        console.log(req.body)
         // Création d'un nouvel objet produit
         const nouveauProduit = new Produits({
             ...req.body,
@@ -66,9 +64,6 @@ exports.getOneProduits = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log("id:", id);
-        console.log("image:", req.file)
-        console.log("body", req.body)
         if (!id) {
             return res.status(400).json({ message: 'ID du produit manquant' });
         }
@@ -77,7 +72,7 @@ exports.update = async (req, res) => {
 
         // Trouver le produit existant
         const produit = await Produits.findById(id);
-        console.log(req.body)
+
         if (!produit) {
             return res.status(404).json({ message: 'Produit non trouvé' });
         }
@@ -86,7 +81,7 @@ exports.update = async (req, res) => {
         if (produit.userId.toString() !== req.auth.userId) {
             return res.status(401).json({ message: 'Non autorisé' });
         }
-        console.log("produit existant:", produit)
+
         // Mise à jour du produit avec les nouvelles valeurs
         const produitMisAJour = await Produits.findByIdAndUpdate(
             id,
@@ -105,7 +100,6 @@ exports.update = async (req, res) => {
             return res.status(400).json({ message: 'Erreur lors de la mise à jour du produit' });
         }
 
-        console.log("produit a jours est:",produitMisAJour)
         return res.status(200).json({ message: 'Produit modifié avec succès', produits: produitMisAJour });
 
     } catch (err) {
