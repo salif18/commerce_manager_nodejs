@@ -4,10 +4,10 @@ const Users = require("../models/user_model");
 const nodemailer = require("nodemailer");
 
 // Durée de blocage en millisecondes (1 heure)
-const BLOCK_DURATION = 60 * 60 * 1000;
+const BLOCK_DURATION = 5 * 60 * 1000;
 
 // Nombre maximal de tentatives
-const TENTATIVES_MAX = 5;
+const TENTATIVES_MAX = 3;
 
 // Fonction pour réinitialiser le token de l'utilisateur
 exports.reset = async (req, res) => {
