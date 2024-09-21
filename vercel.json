@@ -10,9 +10,10 @@
     {
       "src": "/(.*)",
       "dest": "/server.js",
-      "methods": ["GET", "OPTIONS", "PATCH", "DELETE", "POST", "PUT"],
+      "methods": ["GET","POST", "PUT", "DELETE", "OPTIONS", "PATCH" ],
       "headers": {
-        "Access-Control-Allow-Origin": "*"
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers":"Content-Type, Authorization"
       }
     }
   ]
