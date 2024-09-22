@@ -3,7 +3,8 @@ const Router = express.Router();
 
 const Product_Controller = require("../controller/produits_controller");
 const middleware = require("../middlewares/AuthMiddleware");
-const uploadFile = require("../middlewares/ImageMiddleware")
+const uploadFile = require("../middlewares/multerlocale")
+const cloudFile = require("../middlewares/cloudinary")
 
 Router.post("/",middleware,uploadFile,Product_Controller.create);
 Router.get("/:userId",middleware,Product_Controller.getProduits);

@@ -1,9 +1,9 @@
 const Produits = require("../models/produits_model");
 const fs = require('fs');
 
+
 exports.create = async (req, res, next) => {
     try {
-      
         // Création d'un nouvel objet produit
         const nouveauProduit = new Produits({
             ...req.body,
