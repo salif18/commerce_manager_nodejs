@@ -4,7 +4,7 @@ const cloudinary = require("../middlewares/cloudinary")
 
 exports.create = async (req, res, next) => {
     try {
-       
+
         //valeur initial
         let imageUrl = "";
         let cloudinaryId = "";
@@ -166,7 +166,7 @@ exports.delete = async (req, res) => {
         // });
 
         //  Extraire l'identifiant public de l'image sur Cloudinary
-       
+
         // Si le produit a un cloudinaryId, supprimer l'image sur Cloudinary
         if (produit.cloudinaryId) {
             await cloudinary.uploader.destroy(produit.cloudinaryId);
