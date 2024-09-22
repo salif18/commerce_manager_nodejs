@@ -118,7 +118,7 @@ exports.update = async (req, res) => {
                 // STOCKER EN LOCAL
                 // image: req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : produit.image,
                 image: imageUrl, // URL Cloudinary renvoyée dans req.file.path
-                cloudinary:cloudinaryId,
+                cloudinaryId:cloudinaryId,
                 categories: categories.length > 0 ? categories : produit.categories,
                 prix_achat: prix_achat.length > 0 ? prix_achat : produit.prix_achat,
                 prix_vente: prix_vente.length > 0 ? prix_vente : produit.prix_vente,
