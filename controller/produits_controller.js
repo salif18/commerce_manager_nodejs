@@ -4,17 +4,27 @@ const cloudinary = require("../middlewares/cloudinary")
 
 exports.create = async (req, res, next) => {
     try {
+       
+        //valeur initial
+        let imageUrl = "";
+        let cloudinaryId = "";
+        // Vérifier s'il y a un fichier
+        if (req.file) {
+            // Upload de l'image sur Cloudinary
+            const result = await cloudinary.uploader.upload(req.file.path);
+            imageUrl = result.secure_url;
+            cloudinaryId = result.public_id;
+        }
 
-        const urlImg = await cloudinary.uploader.upload(req.file.path)
         // Création d'un nouvel objet produit
         const nouveauProduit = new Produits({
             ...req.body,
+            // STOKER IMAGE EN LOCAL
             // image: req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : "",
-            image: req.file ? urlImg : "", // URL Cloudinary renvoyée dans req.file.path
-            userId: req.auth.userId ,// Associer le produit à l'utilisateur
-            cloudinaryId: urlImg ? urlImg.public_id : ""
+            image: imageUrl,  // URL Cloudinary renvoyée dans req.file.path
+            userId: req.auth.userId,// Associer le produit à l'utilisateur
+            cloudinaryId: cloudinaryId, // Enregistrer l'ID Cloudinary si nécessaire
         });
-
         // Sauvegarde du produit dans la base de données
         const produitSauvegarde = await nouveauProduit.save();
 
@@ -28,7 +38,6 @@ exports.create = async (req, res, next) => {
 
 exports.getProduits = async (req, res) => {
     try {
-
         const { userId } = req.params
 
         if (!userId) {
@@ -87,13 +96,28 @@ exports.update = async (req, res) => {
             return res.status(401).json({ message: 'Non autorisé' });
         }
 
+        let imageUrl = produit.image; // Garder l'image actuelle si pas de mise à jour
+        let cloudinaryId = produit.cloudinaryId; // Garder l'ancien Cloudinary ID si non modifié
+        if (req.file) {
+            // Si le produit a déjà une image associée, la supprimer sur Cloudinary
+            if (produit.cloudinaryId) {
+                await cloudinary.uploader.destroy(produit.cloudinaryId);
+            }
+
+            // Uploader la nouvelle image sur Cloudinary
+            const result = await cloudinary.uploader.upload(req.file.path);
+            imageUrl = result.secure_url; // URL sécurisée de la nouvelle image
+            cloudinaryId = result.public_id; // ID Cloudinary de la nouvelle image
+        }
+
         // Mise à jour du produit avec les nouvelles valeurs
         const produitMisAJour = await Produits.findByIdAndUpdate(
             id,
             {
                 nom: nom ? nom : produit.nom,
-                image: req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : produit.image,
-                // image: req.file ? req.file.path : produit.image , // URL Cloudinary renvoyée dans req.file.path
+                // STOCKER EN LOCAL
+                // image: req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : produit.image,
+                image: imageUrl, // URL Cloudinary renvoyée dans req.file.path
                 categories: categories.length > 0 ? categories : produit.categories,
                 prix_achat: prix_achat.length > 0 ? prix_achat : produit.prix_achat,
                 prix_vente: prix_vente.length > 0 ? prix_vente : produit.prix_vente,
@@ -128,34 +152,33 @@ exports.delete = async (req, res) => {
         if (produit.userId.toString() !== req.auth.userId) {
             return res.status(401).json({ message: 'Non autorisé' });
         }
-
-        const filename = produit.image.split('/images/')[1];
-
+        // METHODE SI LES FICHIER SON STOCKER EN LOCAL
+        // const filename = produit.image.split('/images/')[1];
         // Supprimer l'image du serveur
-        fs.unlink(`public/images/${filename}`, async (err) => {
-            if (err) {
-                return res.status(500).json({ message: "Erreur lors de la suppression de l'image", error: err });
-            }
+        // fs.unlink(`public/images/${filename}`, async (err) => {
+        //     if (err) {
+        //         return res.status(500).json({ message: "Erreur lors de la suppression de l'image", error: err });
+        //     }
 
-            // Supprimer le produit après avoir supprimé l'image
-            await produit.deleteOne({ _id: id });
-            return res.status(200).json({ message: 'Produit supprimé avec succès' });
-        });
+        //     // Supprimer le produit après avoir supprimé l'image
+        //     await produit.deleteOne({ _id: id });
+        //     return res.status(200).json({ message: 'Produit supprimé avec succès' });
+        // });
 
-         // Extraire l'identifiant public de l'image sur Cloudinary
-        //  const publicId = produit.image.split('/').pop().split('.')[0]; // Obtient l'ID public de l'image Cloudinary
+        //  Extraire l'identifiant public de l'image sur Cloudinary
+       
+        // Si le produit a un cloudinaryId, supprimer l'image sur Cloudinary
+        if (produit.cloudinaryId) {
+            await cloudinary.uploader.destroy(produit.cloudinaryId);
+        }
 
-        //  // Supprimer l'image de Cloudinary
-        //  cloudinary.uploader.destroy(publicId, async (err, result) => {
-        //      if (err) {
-        //          return res.status(500).json({ message: "Erreur lors de la suppression de l'image", error: err });
-        //      }
- 
-        //      // Si l'image est supprimée avec succès, supprimer le produit
-        //      await produit.deleteOne({ _id: id });
-        //      return res.status(200).json({ message: 'Produit et image supprimés avec succès' });
-        //  });
- 
+        // Supprimer le produit
+        await produit.deleteOne({ _id: id });
+        // Si l'image est supprimée avec succès, supprimer le produit
+        await produit.deleteOne({ _id: id });
+        return res.status(200).json({ message: 'Produit et image supprimés avec succès' });
+
+
 
     } catch (err) {
         return res.status(500).json({ message: err.message });
