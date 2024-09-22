@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const schema = mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Users' },
+    cloudinaryId: { type: String },
     image: { type: String },
     nom: { type: String, required: true },
     categories: { type: String, required: true },

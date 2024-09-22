@@ -1,15 +1,18 @@
 const Produits = require("../models/produits_model");
 const fs = require('fs');
-
+const cloudinary = require("../middlewares/cloudinary")
 
 exports.create = async (req, res, next) => {
     try {
+
+        const urlImg = await cloudinary.uploader.upload(req.file.path)
         // Création d'un nouvel objet produit
         const nouveauProduit = new Produits({
             ...req.body,
-            image: req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : "",
-            // image: req.file ? req.file.path : "", // URL Cloudinary renvoyée dans req.file.path
-            userId: req.auth.userId // Associer le produit à l'utilisateur
+            // image: req.file ? `${req.protocol}://${req.get("host")}/images/${req.file.filename}` : "",
+            image: req.file ? urlImg : "", // URL Cloudinary renvoyée dans req.file.path
+            userId: req.auth.userId ,// Associer le produit à l'utilisateur
+            cloudinaryId: urlImg ? urlImg.public_id : ""
         });
 
         // Sauvegarde du produit dans la base de données
