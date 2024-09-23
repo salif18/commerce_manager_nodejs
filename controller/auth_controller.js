@@ -54,6 +54,7 @@ exports.registre = async (req, res) => {
       token: token,
       userId: user._id,
       userName: user.name,
+      userNumber:user.numero,
       entreprise: user.boutique_name,
       message: "user creer"
     });
@@ -119,6 +120,7 @@ exports.login = async (req, res) => {
     return res.status(200).json({
       token: token,
       userId: user._id,
+      userNumber:user.numero,
       userName: user.name,
       entreprise: user.boutique_name,
     });
