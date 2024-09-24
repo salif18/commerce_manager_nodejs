@@ -62,7 +62,7 @@ exports.getVentes = async (req, res , next) => {
         const { userId } = req.params
 
         if (!userId) {
-            returnres.status(404).json(
+            return res.status(404).json(
                 { message: 'userId est requis' },
             );
         }
